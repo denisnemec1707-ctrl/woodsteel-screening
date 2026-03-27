@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Woodsteel CZ - Screening hovor s Petrem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--brown-dark:#3F2211;--brown-mid:#764D24;--brown-light:#8B6914;--gold:#CBAB58;--gold-light:#D4BC7A;--gold-pale:#F5ECD7;--cream:#FDF8F0;--white:#FFFFFF;--text:#555555;--text-light:#888888}
+body{font-family:'Open Sans',Arial,sans-serif;background:var(--cream);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text);padding:20px}
+.page-wrapper{width:100%;max-width:520px}
+.logo-area{text-align:center;margin-bottom:28px}
+.logo-area img{height:80px;width:auto}
+.card{background:var(--white);border-radius:16px;padding:40px 36px;box-shadow:0 4px 24px rgba(63,34,17,0.08),0 1px 4px rgba(63,34,17,0.04);border:1px solid rgba(203,171,88,0.15)}
+.card-header{text-align:center;margin-bottom:28px}
+.card-header h1{font-size:22px;font-weight:600;color:var(--brown-dark);margin-bottom:8px;line-height:1.35}
+.card-header p{font-size:14.5px;color:var(--text);line-height:1.6}
+.card-header .highlight{color:var(--brown-mid);font-weight:600}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold-pale),var(--gold),var(--gold-pale),transparent);margin:24px 0}
+.steps{margin-bottom:28px}
+.steps-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold);font-weight:600;margin-bottom:14px}
+.step{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.step-num{flex-shrink:0;width:24px;height:24px;background:var(--brown-dark);color:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:1px}
+.step-text{font-size:13.5px;color:var(--text);line-height:1.5;padding-top:2px}
+.call-area{text-align:center}
+#callBtn{display:inline-flex;align-items:center;gap:10px;padding:16px 44px;font-size:16px;font-weight:600;font-family:'Open Sans',Arial,sans-serif;color:var(--gold);background:var(--brown-dark);border:2px solid var(--gold);border-radius:50px;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 16px rgba(63,34,17,0.2);letter-spacing:0.5px}
+#callBtn:hover{background:var(--brown-mid);transform:translateY(-2px);box-shadow:0 6px 24px rgba(63,34,17,0.3)}
+#callBtn:disabled{background:#999;border-color:#bbb;color:#ddd;cursor:not-allowed;box-shadow:none;transform:none}
+#callBtn svg{width:20px;height:20px}
+#callBtn.active{background:#c0392b;border-color:#e74c3c;color:#fff;animation:pulse-ring 2s ease infinite}
+@keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(192,57,43,0.4)}70%{box-shadow:0 0 0 12px rgba(192,57,43,0)}100%{box-shadow:0 0 0 0 rgba(192,57,43,0)}}
+.timer{font-size:32px;font-weight:300;color:var(--brown-dark);margin-top:16px;font-variant-numeric:tabular-nums;display:none;letter-spacing:2px}
+#status{margin-top:14px;font-size:13.5px;color:var(--text-light);min-height:20px;text-align:center}
+.status-dot{display:inline-block;width:8px;height:8px;background:#27ae60;border-radius:50%;margin-right:6px;animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.done-message{display:none;text-align:center;padding:20px}
+.done-message .checkmark{width:56px;height:56px;background:var(--gold-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.done-message .checkmark svg{width:28px;height:28px;color:var(--brown-mid)}
+.done-message h2{font-size:18px;color:var(--brown-dark);font-weight:600;margin-bottom:8px}
+.done-message p{font-size:14px;color:var(--text);line-height:1.6}
+.footer{text-align:center;margin-top:24px;font-size:11.5px;color:var(--text-light);letter-spacing:0.3px}
+.footer a{color:var(--brown-mid);text-decoration:none}
+@media(max-width:560px){.card{padding:28px 22px}.card-header h1{font-size:19px}#callBtn{padding:14px 36px;font-size:15px}}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<div class="logo-area"><img src="https://woodsteel.sk/wp-content/uploads/2023/09/woodsteel-weblogo.png" alt="Woodsteel"/></div>
+<div class="card">
+<div class="card-header"><h1>Screening hovor s Petrem</h1><p>Za chvíli budete mluvit s <span class="highlight">Petrem</span>, naším AI asistentem, který Vám položí několik krátkých otázek ohledně pozice <span class="highlight">obchodního zástupce</span>. Hovor trvá přibližně 10 minut.</p></div>
+<div class="divider"></div>
+<div class="steps" id="stepsSection"><div class="steps-title">Před zahájením hovoru</div><div class="step"><span class="step-num">1</span><span class="step-text">Ujistěte se, že jste na klidném místě</span></div><div class="step"><span class="step-num">2</span><span class="step-text">Povolte přístup k mikrofonu, až Vás prohlížeč požádá</span></div><div class="step"><span class="step-num">3</span><span class="step-text">Klikněte na tlačítko níže a Petr se Vám ozve</span></div></div>
+<div class="call-area" id="callArea"><button id="callBtn" onclick="toggleCall()"><svg id="phoneIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span id="btnText">Zahájit hovor</span></button><div class="timer" id="timer">00:00</div><div id="status"></div></div>
+<div class="done-message" id="doneMessage"><div class="checkmark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div><h2>Děkujeme za Váš čas!</h2><p>Hovor byl úspěšně dokončen. Naše tým Vás bude brzy kontaktovat s dalšími informacemi.</p></div>
+</div>
+<div class="footer">© 2026 <a href="https://woodsteel.sk" target="_blank">Woodsteel</a> · Zimní zahrady, pergoly a zasklení teras</div>
+</div>
+<script>
+const VAPI_PUBLIC_KEY='bd9aedcb-bcac-4ba0-8a79-b5f931074080';const ASSISTANT_ID='7b123d35-64a8-4ef8-ac4f-9d3f4bd6a5b1';let vapi=null,timerInterval=null,seconds=0,isActive=false;function loadVapiSDK(){return new Promise((r,j)=>{if(window.Vapi){r();return}const s=document.createElement('scr'+'ipt');s.src='https://cdn.jsdelivr.net/npm/@vapi-ai/web@2.3.0/dist/vapi.js';s.onload=()=>{if(window.Vapi)r();else j(new Error('Vapi not found'))};s.onerror=()=>j(new Error('Failed to load Vapi SDK'));document.head.appendChild(s)})}async function initVapi(){await loadVapiSDK();vapi=new window.Vapi(VAPI_PUBLIC_KEY);vapi.on('call-start',()=>{setActiveState(true);document.getElementById('status').innerHTML='<span class="status-dot"><'+'/span> Hovor prob\\u00edh\\u00e1 \\u2013 Petr V\\u00e1s sly\\u0161\\u00ed';startTimer()});vapi.on('call-end',()=>{setActiveState(false);stopTimer();showDoneState()});vapi.on('speech-start',()=>{document.getElementById('status').innerHTML='<span class="status-dot"><'+'/span> Petr mluv\\u00ed...'});vapi.on('speech-end',()=>{if(isActive)document.getElementById('status').innerHTML='<span class="status-dot"><'+'/span> Poslouch\\u00e1m V\\u00e1s...'});vapi.on('error',(e)=>{console.error('Vapi error:',e);setActiveState(false);stopTimer();document.getElementById('status').textContent='Do\\u0161lo k chyb\\u011b. Obnovte str\\u00e1nku a zkuste znovu.';document.getElementById('callBtn').disabled=false})}async function toggleCall(){if(isActive){if(vapi)vapi.stop();return}const b=document.getElementById('callBtn');b.disabled=true;document.getElementById('status').textContent='P\\u0159ipojov\\u00e1n\\u00ed k Petrovi...';try{if(!vapi)await initVapi();await vapi.start(ASSISTANT_ID)}catch(e){console.error('Start error:',e);document.getElementById('status').textContent='Nepoda\\u0159ilo se zah\\u00e1jit hovor. Zkontrolujte mikrofon.';b.disabled=false}}function setActiveState(a){isActive=a;const b=document.getElementById('callBtn'),t=document.getElementById('btnText'),i=document.getElementById('phoneIcon');b.disabled=false;if(a){b.classList.add('active');t.textContent='Ukon\\u010dit hovor';i.innerHTML='<line x1="18" y1="6" x2="6" y2="18"><'+'/line><line x1="6" y1="6" x2="18" y2="18"><'+'/line>';document.getElementById('timer').style.display='block';document.getElementById('stepsSection').style.display='none'}else{b.classList.remove('active');t.textContent='Zah\\u00e1jit hovor';i.innerHTML='<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>'}}function showDoneState(){document.getElementById('callArea').style.display='none';document.getElementById('doneMessage').style.display='block'}function startTimer(){seconds=0;updateTimerDisplay();timerInterval=setInterval(()=>{seconds++;updateTimerDisplay()},1000)}function stopTimer(){clearInterval(timerInterval)}function updateTimerDisplay(){const m=Math.floor(seconds/60).toString().padStart(2,'0');const s=(seconds%60).toString().padStart(2,'0');document.getElementById('timer').textContent=m+':'+s}
+</script>
+</body>
+</html>
