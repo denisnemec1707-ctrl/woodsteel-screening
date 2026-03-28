@@ -166,6 +166,10 @@ const Vapi = VapiModule.default;
 
 const VAPI_PUBLIC_KEY = 'bd9aedcb-bcac-4ba0-8a79-b5f931074080';
 const ASSISTANT_ID = '7b123d35-64a8-4ef8-ac4f-9d3f4bd6a5b1';
+    // Extract candidate email from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const candidateEmail = urlParams.get('email') || '';
+
 
 let vapi = null;
 let timerInterval = null;
@@ -276,7 +280,13 @@ async function toggleCall() {
 
   try {
     if (!vapi) initVapi();
-    await vapi.start(ASSISTANT_ID);
+    await vapi.start(ASSISTANT_ID, {
+        assistantOverrides: {
+          metadata: {
+            candidateEmail: candidateEmail
+          }
+        }
+      });
   } catch (e) {
     console.error('Start error:', e);
     avatarSection.classList.remove('visible');
