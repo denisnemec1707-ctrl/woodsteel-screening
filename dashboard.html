@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Woodsteel HR – Dashboard</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --steel-dark:  #1a2332;
+    --steel-mid:   #2c3e50;
+    --steel-light: #3498db;
+    --steel-pale:  #e8f0fe;
+    --white:       #ffffff;
+    --gray-50:     #f9fafb;
+    --gray-100:    #f3f4f6;
+    --gray-200:    #e5e7eb;
+    --gray-600:    #4b5563;
+    --gray-800:    #1f2937;
+    --red:         #dc2626;
+    --amber:       #d97706;
+    --blue:        #2563eb;
+    --purple:      #7c3aed;
+    --green:       #16a34a;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: linear-gradient(135deg, var(--steel-dark) 0%, var(--steel-mid) 100%);
+    color: var(--white);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  }
+  header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -.5px; }
+  header h1 span { opacity: .7; font-weight: 400; font-size: 1rem; margin-left: 8px; }
+  #refreshBtn {
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.3);
+    color: var(--white);
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: .875rem;
+    transition: background .2s;
+  }
+  #refreshBtn:hover { background: rgba(255,255,255,.25); }
+
+  /* ── Main layout ── */
+  main { max-width: 1400px; margin: 0 auto; padding: 28px 24px; }
+
+  /* ── Stats cards ── */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .stat-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    border-top: 4px solid var(--steel-light);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .stat-card.green  { border-color: var(--green); }
+  .stat-card.red    { border-color: var(--red); }
+  .stat-card.amber  { border-color: var(--amber); }
+  .stat-card.blue   { border-color: var(--steel-light); }
+  .stat-card.purple { border-color: var(--purple); }
+  .stat-card.gray   { border-color: var(--gray-600); }
+  .stat-label { font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--gray-600); }
+  .stat-value { font-size: 2rem; font-weight: 700; color: var(--gray-800); line-height: 1; }
+
+  /* ── Controls ── */
+  .controls {
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    background: var(--white);
+    padding: 14px 18px;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    margin-bottom: 20px;
+  }
+  .controls input, .controls select {
+    border: 1px solid var(--gray-200);
+    border-radius: 7px;
+    padding: 8px 12px;
+    font-size: .875rem;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .controls input:focus, .controls select:focus { border-color: var(--steel-light); }
+  .controls input { flex: 1; min-width: 200px; }
+  #lastUpdated { margin-left: auto; font-size: .8rem; color: var(--gray-600); }
+
+  /* ── Table ── */
+  .table-wrap {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+  thead { background: var(--steel-dark); color: var(--white); }
+  thead th {
+    padding: 12px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid var(--gray-100); transition: background .15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--steel-pale); }
+  tbody td { padding: 11px 14px; vertical-align: middle; }
+
+  /* Status badges */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: .75rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge-prechadza   { background: #d1fae5; color: #065f46; }
+  .badge-neuspel     { background: #fee2e2; color: #991b1b; }
+  .badge-bez_odpovede{ background: #fef3c7; color: #92400e; }
+  .badge-volanie     { background: #dbeafe; color: #1e40af; }
+  .badge-duplikat    { background: #f3f4f6; color: #6b7280; }
+  .badge-nedostupny  { background: #fce7f3; color: #9d174d; }
+  .badge-chyba_volania{ background: #fee2e2; color: #991b1b; }
+  .badge-default     { background: #f3f4f6; color: #374151; }
+
+  /* Rating bar */
+  .rating-wrap { display: flex; align-items: center; gap: 8px; }
+  .rating-bar {
+    flex: 1; max-width: 80px; height: 6px; background: var(--gray-200);
+    border-radius: 3px; overflow: hidden;
+  }
+  .rating-fill { height: 100%; border-radius: 3px; background: var(--steel-light); }
+  .rating-fill.high { background: #16a34a; }
+  .rating-fill.mid  { background: #d97706; }
+  .rating-fill.low  { background: #dc2626; }
+  .rating-num { font-weight: 700; min-width: 20px; text-align: right; }
+
+  /* Interview link */
+  .link-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px; border-radius: 6px;
+    background: var(--steel-pale); color: var(--steel-dark);
+    text-decoration: none; font-size: .8rem; font-weight: 600;
+    border: 1px solid #a0c4e8;
+    transition: background .15s;
+  }
+  .link-btn:hover { background: #d0e3f5; }
+
+  /* Attempts dot */
+  .pokus-dots { display: flex; gap: 4px; }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--gray-200);
+  }
+  .dot.filled { background: var(--steel-light); }
+  .dot.fail   { background: var(--red); }
+
+  /* Loading / error states */
+  .center-msg {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--gray-600);
+  }
+  .spinner {
+    display: inline-block; width: 36px; height: 36px;
+    border: 4px solid var(--gray-200);
+    border-top-color: var(--steel-light);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    margin-bottom: 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* No results */
+  .no-results { padding: 40px; text-align: center; color: var(--gray-600); font-size: .95rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>&#x1F3D7;&#xFE0F; Woodsteel HR <span>Dashboard</span></h1>
+  <button id="refreshBtn" onclick="loadData()">&#x27F3; Obnovit</button>
+</header>
+
+<main>
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card gray">
+      <div class="stat-label">Celkem</div>
+      <div class="stat-value" id="stat-total">&ndash;</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">Prochazi</div>
+      <div class="stat-value" id="stat-prechadza">&ndash;</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-label">Neuspel</div>
+      <div class="stat-value" id="stat-neuspel">&ndash;</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-label">Bez odpovedi</div>
+      <div class="stat-value" id="stat-bez">&ndash;</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-label">Probiha</div>
+      <div class="stat-value" id="stat-volanie">&ndash;</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-label">Ceka</div>
+      <div class="stat-value" id="stat-caka">&ndash;</div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <input type="text" id="searchBox" placeholder="&#x1F50D;  Hledat (jmeno, telefon, lokalita...)" oninput="renderTable()">
+    <select id="statusFilter" onchange="renderTable()">
+      <option value="">Vsechny statusy</option>
+      <option value="prechadza">Prochazi</option>
+      <option value="neuspel">Neuspel</option>
+      <option value="bez_odpovede">Bez odpovedi</option>
+      <option value="volanie">Probiha hovor</option>
+      <option value="duplikat">Duplikat</option>
+      <option value="nedostupny">Nedostupny</option>
+      <option value="chyba_volania">Chyba volani</option>
+    </select>
+    <span id="lastUpdated"></span>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <div id="tableContainer">
+      <div class="center-msg">
+        <div class="spinner"></div><br>Nacitam data...
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const WEBHOOK = 'https://script.google.com/macros/s/AKfycbxoHKbpLzZd8Z3UpT_9w6yiFzCKLsuSkKG7847GzqKwiC3xTlQsxLMMl_DF5rjl8fv3/exec';
+let allCandidates = [];
+
+function statusBadge(s) {
+  const map = {
+    prechadza:    'badge-prechadza',
+    neuspel:      'badge-neuspel',
+    bez_odpovede: 'badge-bez_odpovede',
+    volanie:      'badge-volanie',
+    duplikat:     'badge-duplikat',
+    nedostupny:   'badge-nedostupny',
+    chyba_volania:'badge-chyba_volania',
+  };
+  const label = {
+    prechadza:    '\u2705 Prochazi',
+    neuspel:      '\u274C Neuspel',
+    bez_odpovede: '\uD83D\uDCF5 Bez odpovedi',
+    volanie:      '\uD83D\uDCDE Probiha hovor',
+    duplikat:     '\u26A0\uFE0F Duplikat',
+    nedostupny:   '\uD83D\uDEAB Nedostupny',
+    chyba_volania:'\u26A1 Chyba volani',
+  };
+  const cls = map[s] || 'badge-default';
+  return '<span class="badge ' + cls + '">' + (label[s] || s || '\u2014') + '</span>';
+}
+
+function ratingHTML(h) {
+  const n = parseFloat(h);
+  if (isNaN(n) || !h) return '<span style="color:#9ca3af">\u2014</span>';
+  const pct = Math.min(100, (n / 10) * 100);
+  const cls = n >= 8 ? 'high' : n >= 5 ? 'mid' : 'low';
+  return '<div class="rating-wrap"><div class="rating-bar"><div class="rating-fill ' + cls + '" style="width:' + pct + '%"></div></div><span class="rating-num">' + n + '</span></div>';
+}
+
+function pokusHTML(pokus, status) {
+  const n = parseInt(pokus) || 0;
+  const fail = ['neuspel','nedostupny'].includes(status);
+  const dots = [1,2,3].map(function(i) {
+    if (i <= n) return '<div class="dot ' + (fail && i === n ? 'fail' : 'filled') + '"></div>';
+    return '<div class="dot"></div>';
+  }).join('');
+  return '<div class="pokus-dots">' + dots + '</div>';
+}
+
+function escH(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function boolChip(v) {
+  var s = String(v||'').toLowerCase();
+  if (s === 'true' || s === 'ano' || s === 'yes') return '<span style="color:#16a34a;font-weight:600">\u2705</span>';
+  if (s === 'false' || s === 'nie' || s === 'ne' || s === 'no') return '<span style="color:#dc2626;font-weight:600">\u274C</span>';
+  return escH(v) || '\u2014';
+}
+
+function renderTable() {
+  var search = document.getElementById('searchBox').value.toLowerCase();
+  var filterStatus = document.getElementById('statusFilter').value;
+
+  var rows = allCandidates.filter(function(c) {
+    if (filterStatus && c.status !== filterStatus) return false;
+    if (search) {
+      var hay = [c.meno, c.telefon, c.email, c.lokalita, c.status].join(' ').toLowerCase();
+      if (hay.indexOf(search) === -1) return false;
+    }
+    return true;
+  });
+
+  if (rows.length === 0) {
+    document.getElementById('tableContainer').innerHTML = '<div class="no-results">Zadne zaznamy neodpovidaji filtru.</div>';
+    return;
+  }
+
+  var html = '<table><thead><tr>' +
+    '<th>#</th>' +
+    '<th>Jmeno</th>' +
+    '<th>Telefon</th>' +
+    '<th>Status</th>' +
+    '<th>Hodnoceni</th>' +
+    '<th>Zkusenosti</th>' +
+    '<th>Souhlas provize</th>' +
+    '<th>Souhlas cestovani</th>' +
+    '<th>Lokalita</th>' +
+    '<th>Nastup</th>' +
+    '<th>Obch. uspech</th>' +
+    '<th>Pokusy</th>' +
+    '<th>Zaznam</th>' +
+    '</tr></thead><tbody>';
+
+  rows.forEach(function(c, i) {
+    html += '<tr>' +
+      '<td style="color:#9ca3af;font-size:.8rem">' + (i + 1) + '</td>' +
+      '<td><div style="font-weight:600">' + escH(c.meno) + '</div>' +
+        (c.email ? '<div style="font-size:.75rem;color:#6b7280">' + escH(c.email) + '</div>' : '') +
+      '</td>' +
+      '<td style="font-family:monospace;font-size:.85rem">' + escH(c.telefon) + '</td>' +
+      '<td>' + statusBadge(c.status) + '</td>' +
+      '<td>' + ratingHTML(c.hodnotenie) + '</td>' +
+      '<td>' + boolChip(c.skusenosti) + '</td>' +
+      '<td>' + boolChip(c.suhlasProvize) + '</td>' +
+      '<td>' + boolChip(c.suhlasCest) + '</td>' +
+      '<td>' + (escH(c.lokalita) || '\u2014') + '</td>' +
+      '<td>' + (escH(c.nastup) || '\u2014') + '</td>' +
+      '<td>' + (escH(c.obchodniUspech) || '\u2014') + '</td>' +
+      '<td>' + pokusHTML(c.pokus, c.status) + '</td>' +
+      '<td>' + (c.link ? '<a class="link-btn" href="' + escH(c.link) + '" target="_blank">\uD83D\uDCC4 Otevrit</a>' : '\u2014') + '</td>' +
+    '</tr>';
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('tableContainer').innerHTML = html;
+}
+
+function loadData() {
+  document.getElementById('tableContainer').innerHTML =
+    '<div class="center-msg"><div class="spinner"></div><br>Nacitam data...</div>';
+
+  var url = WEBHOOK + '?mode=dashboard';
+  fetch(url)
+    .then(function(res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function(data) {
+      allCandidates = data.candidates || [];
+
+      document.getElementById('stat-total').textContent    = data.total || 0;
+      document.getElementById('stat-prechadza').textContent = data.prechadza || 0;
+      document.getElementById('stat-neuspel').textContent   = data.neuspel || 0;
+      document.getElementById('stat-bez').textContent       = data.bez_odpovede || 0;
+      document.getElementById('stat-volanie').textContent   = data.volanie || 0;
+      var caka = allCandidates.filter(function(c) { return !c.status || c.status === ''; }).length;
+      document.getElementById('stat-caka').textContent      = caka;
+
+      if (data.updated) {
+        var d = new Date(data.updated);
+        document.getElementById('lastUpdated').textContent =
+          'Aktualizovano: ' + d.toLocaleTimeString('cs-CZ', {hour:'2-digit',minute:'2-digit'}) +
+          ' ' + d.toLocaleDateString('cs-CZ');
+      }
+
+      renderTable();
+    })
+    .catch(function(err) {
+      document.getElementById('tableContainer').innerHTML =
+        '<div class="center-msg" style="color:#dc2626">' +
+        '\u26A0\uFE0F Chyba pri nacitani dat:<br><small>' + err.message + '</small><br><br>' +
+        '<button onclick="loadData()" style="padding:8px 16px;border:1px solid #dc2626;background:transparent;color:#dc2626;border-radius:6px;cursor:pointer">Zkusit znovu</button>' +
+        '</div>';
+      console.error(err);
+    });
+}
+
+// Auto-load on page open
+loadData();
+</script>
+</body>
+</html>
