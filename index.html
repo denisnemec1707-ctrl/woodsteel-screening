@@ -161,7 +161,7 @@ body{font-family:'Open Sans',Arial,sans-serif;background:var(--cream);min-height
 </div>
 
 <script type="module">
-import VapiModule from 'https://cdn.jsdelivr.net/npm/@vapi-ai/web/+esm';
+import VapiModule from 'https://cdn.jsdelivr.net/npm/@vapi-ai/web@2.3.10/+esm';
 const Vapi = VapiModule.default;
 
 const VAPI_PUBLIC_KEY = 'bd9aedcb-bcac-4ba0-8a79-b5f931074080';
@@ -280,13 +280,19 @@ async function toggleCall() {
 
   try {
     if (!vapi) initVapi();
+    // Request microphone permission first to avoid audio timeout
+
+    await navigator.mediaDevices.getUserMedia({ audio: true });
+
     await vapi.start(ASSISTANT_ID, {
-        assistantOverrides: {
-          metadata: {
-            candidateEmail: candidateEmail
-          }
-        }
-      });
+
+      metadata: {
+
+        candidateEmail: candidateEmail
+
+      }
+
+    });
   } catch (e) {
     console.error('Start error:', e);
     avatarSection.classList.remove('visible');
